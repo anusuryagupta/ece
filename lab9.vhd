@@ -45,21 +45,16 @@ signal q_0 : STD_LOGIC_VECTOR(3 downto 0);
 signal q_1 : STD_LOGIC_VECTOR(3 downto 0);
 signal q_2 : STD_LOGIC_VECTOR(3 downto 0);
 signal q_3 : STD_LOGIC_VECTOR(3 downto 0);
-signal fdls : STD_LOGIC := (w and clk);
-signal dummy : STD_LOGIC_VECTOR(3 downto 0);
-signal clk1 : STD_LOGIC_VECTOR(3 downto 0);
+signal en : STD_LOGIC := (w and clk);
+signal regclock : STD_LOGIC_VECTOR(3 downto 0);
 
 begin
-u1: entity fourbitregister port map (clk => clk1(0), q => q_0, d => d);
-u2: entity fourbitregister port map (clk => clk1(1), q => q_1, d => d); 
-u3: entity fourbitregister port map (clk => clk1(2), q => q_2, d => d);
-u4: entity fourbitregister port map (clk => clk1(3), q => q_3, d => d);
-u5: entity twotofourdecoder port map (i => s, en => fdls, O => dummy);
+u1: entity fourbitregister port map (clk => regclock(0), q => q_0, d => d);
+u2: entity fourbitregister port map (clk => regclock(1), q => q_1, d => d); 
+u3: entity fourbitregister port map (clk => regclock(2), q => q_2, d => d);
+u4: entity fourbitregister port map (clk => regclock(3), q => q_3, d => d);
+u5: entity twotofourdecoder port map (i => s, en => en, O => regclock);
 u6: entity multiplexer port map (a => q_0, b => q_1, c => q_2, d => q_3, s => s, y => y);
-clk1(3) <= fdls and dummy(3);
-clk1(2) <= fdls and dummy(2);
-clk1(1) <= fdls and dummy(1);
-clk1(0) <= fdls and dummy(0);
 
 
 end Behavioral;
