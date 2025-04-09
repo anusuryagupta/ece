@@ -1,0 +1,16 @@
+reset0, armed0, alarm0 --- 3 --- number indicates "amount saved so far, waiting for next" so at xxxxx5 you're waiting for the 6th input
+reset 1-5, armed 1-5, alarm 1-5 <- location in array when all true --- 15
+falsereset 1-5, falsearmed 1-5, falsealarm 1-5 <- location in array when nonzero are false --- 15 <- line 12
+2_armed 2-5, 2_falsearmed 2-5 <- same as line 3 but noting that x2 was pressed most recently --- 8
+x4 at xxxxx1-4 when reset or armed should roll back to xxxxx0
+x2 -> x2 during armed (except during armed1 or falsearmed1) should roll back to armed0
+if correct from reset, send to armed, else to reset
+  if correct from armed, send to reset, else to alarm
+    if correct from alarm, send to armed, else to alarm
+on xxxxx1-5 if an input is wrong, switch to same state on false i.e. armed1 -> false input -> move to falsearmed2
+
+total 41 states, could drop to 22 if a flag is legal
+  
+implement wait until? implement debounce?
+can you use parallel state machines or boolean flags and AND them with the "arrays" to find false or not?
+
