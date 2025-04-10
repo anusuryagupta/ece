@@ -36,5 +36,5 @@ refresh -> buttoninput <- btn0, solved <- true // can get copy pasted but doing 
 true
 false
 false-holding2
-handler -> true and counter <- cnt0 when locktype = alarm, false-holding2 if last pressed btn was btn2 false otherwise // solved needs to be reset to true on cnt0 -> if cnt0 and nobtn set to true?
+handler -> true and counter <- cnt0 when locktype = alarm, false-holding2 if last pressed btn was btn2 false otherwise 
 // handler functions can be in ---counter--- but doing this to save space
