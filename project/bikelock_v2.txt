@@ -1,0 +1,40 @@
+using 4 parallel state machines, nested case statements
+output should be AABBBCCCCDD, AA to seven segment -> should be able to truncate one C after resolves and refresh are merged into cntX
+A is locktype, B is buttoninput, C is counter, D is solver
+during debug, send each bit of output to the LEDs on basys, but in final product just output to seven segment
+
+init: unlock, nobtn, cnt0, true
+risingedge(reset) -> go to init
+
+---locktype---
+unlock
+lock
+alarm
+
+---buttoninput---
+nobtn -> 00000 on button inputs vector // implement debounce and priority encoder
+btn0 -> 10000 on button inputs vector
+btn1 -> 01000 on button inputs vector
+btn2 -> 00100 on button inputs vector
+btn3 -> 00010 on button inputs vector
+btn4 -> 00001 on button inputs vector
+
+---counter---
+cnt0 -> cnt1 when risingedge(nobtn), refresh when fallingedge(btn4), solved <- handler when fallingedge(any btn but btn2)  
+cnt1 -> cnt2 when risingedge(nobtn), refresh when fallingedge(btn4), solved <- handler when fallingedge(any btn but btn0) 
+cnt2 -> cnt3 when risingedge(nobtn), refresh when fallingedge(btn4), solved <- handler when fallingedge(any btn but btn3) 
+cnt3 -> cnt4 when risingedge(nobtn), refresh when fallingedge(btn4), solved <- handler when fallingedge(any btn but btn3) 
+cnt4 -> cnt5 when risingedge(nobtn), refresh when fallingedge(btn4), solved <- handler when fallingedge(any btn but btn1) 
+cnt5 -> resolveunlock when fallingedge(btn4) and lock and true or fallingedge(btn4) and alarm and true, resolvelock when fallingedge(btn4) and unlock,
+        resolvealarm when fallingedge(any btn but btn4) or fallingedge(btn4) and (false or falseholding), refresh when others
+resolveunlock -> locktype <- unlock, refresh // can get copy pasted but doing this to save space
+resolvelock -> locktype <- unlock, refresh // can get copy pasted but doing this to save space
+resolvealarm -> locktype <- unlock, refresh // can get copy pasted but doing this to save space
+refresh -> buttoninput <- btn0, solved <- true // can get copy pasted but doing this to save space
+
+---solver---
+true
+false
+false-holding2
+handler -> true and counter <- cnt0 when locktype = alarm, false-holding2 if last pressed btn was btn2 false otherwise // solved needs to be reset to true on cnt0 -> if cnt0 and nobtn set to true?
+// handler functions can be in ---counter--- but doing this to save space
