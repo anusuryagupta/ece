@@ -7,13 +7,13 @@ init: unlock, nobtn, cnt0, true
 risingedge(reset) -> go to init
 
 ---locktype---
-unlock
+unlock // see ---counter--- for how to change states here
 lock
 alarm
 
 ---buttoninput---
 nobtn -> 00000 on button inputs vector // implement debounce and priority encoder
-btn0 -> 10000 on button inputs vector
+btn0 -> 10000 on button inputs vector // controlled by the input vectors
 btn1 -> 01000 on button inputs vector
 btn2 -> 00100 on button inputs vector
 btn3 -> 00010 on button inputs vector
@@ -33,8 +33,8 @@ resolvealarm -> locktype <- unlock, refresh // can get copy pasted but doing thi
 refresh -> buttoninput <- btn0, solved <- true // can get copy pasted but doing this to save space
 
 ---solver---
-true
+true // navigated by ---counter---, at true by default and switches to false (or falseholding2) when a wrong input is pressed.
 false
 false-holding2
 handler -> true and counter <- cnt0 when locktype = alarm, false-holding2 if last pressed btn was btn2 false otherwise 
-// handler functions can be in ---counter--- but doing this to save space
+// handler is a placeholder, doing this to save space - should be in programming in ---counter---
