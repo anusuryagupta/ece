@@ -34,29 +34,25 @@ library xil_defaultlib;
 use xil_defaultlib.all;
 
 entity fivebitprioritydecoder is
-  Port (   num : in STD_LOGIC_VECTOR (3 downto 0); 
-           segment : out STD_LOGIC_VECTOR (6 downto 0);  -- A at 6, G at 0
-           anodedp : out STD_LOGIC_VECTOR (4 downto 0)); -- dp at 4, anode at 3 to 0
+  Port (   I : in STD_LOGIC_VECTOR (4 downto 0); 
+           O : out STD_LOGIC_VECTOR (5 downto 0)); -- nobtn at 5, x4 at 4, x3 at 3, etc
 end fivebitprioritydecoder;
 
 architecture Behavioral of fivebitprioritydecoder is
-
+-- priority should be x4 > x3 > x2 > x1 > x0
 begin
 with num select
-    segment(6) <= '1' when "0001" | "0100" | "1011" | "1101", '0' when others; -- A
+    O(5) <= '1' when "00000", '0' when others; --nobtn
 with num select
-    segment(5) <= '1' when "0101" | "0110" | "1011" | "1100" | "1110" | "1111", '0' when others; -- B
+    O(4) <= '1' when "10000" | "10001" | "10010" | "10011" | "10100" | "10101" | "10110" | "10111" | "11000" | "11001" | "11010" | "11011" | "11100" | "11101" | "11110" | "11111", '0' when others; -- x4
 with num select
-    segment(4) <= '1' when "0010" | "1100" | "1110" | "1111", '0' when others; -- C
+    O(3) <= '1' when "01000" | "01001" | "01010" | "01011" | "01100" | "01101" | "01110" | "01111", '0' when others; -- x3
 with num select
-    segment(3) <= '1' when "0001" | "0100" | "0111" | "1010" | "1111", '0' when others; -- D
+    O(2) <= '1' when "00100" | "00101" | "00110" | "00111", '0' when others; -- x2
 with num select
-    segment(2) <= '1' when "0001" | "0011" | "0100" | "0101" | "0111" | "1001",'0' when others; -- E
+    O(1) <= '1' when "00010" | "00011", '0' when others; -- x1
 with num select
-    segment(1) <= '1' when "0001" | "0010" | "0011" | "0111" | "1101", '0' when others; -- F
-with num select
-    segment(0) <= '1' when "0000" | "0001" | "0111" | "1100", '0' when others; -- G
-anodedp <= "11110";
+    O(0) <= '1' when "00001" '0' when others; -- x0
 
 end Behavioral;
  
