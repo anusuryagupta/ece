@@ -1,12 +1,11 @@
-verify v2 with mitchell
-write test procedure
+verify v2 with mitchell //
+write test procedure //
 write vhd for debounce
-write vhd for priority encoder
-import displaydecoder
+write vhd for priority encoder // -> convert to binary?
+import displaydecoder //
 write vhd for The Big One
 simulate The Big One
 write xdc for The Big One
-      -> how to handle clocks for like everything, ask mitchell
 upload to basys
 test procedure on basys
 fuck around
