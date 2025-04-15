@@ -1,6 +1,6 @@
 verify v2 with mitchell //
 write test procedure //
-write vhd for debounce
+write vhd for debounce //
 write vhd for priority encoder // -> convert to binary?
 import displaydecoder //
 write vhd for The Big One
