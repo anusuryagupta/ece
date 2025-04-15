@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 02/17/2025 09:43:17 PM
 -- Design Name: 
--- Module Name: displaydecoder - Behavioral
+-- Module Name: fivebitprioritydecoder - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -52,7 +52,7 @@ with num select
 with num select
     O(1) <= '1' when "00010" | "00011", '0' when others; -- x1
 with num select
-    O(0) <= '1' when "00001" '0' when others; -- x0
+    O(0) <= '1' when "00001", '0' when others; -- x0
 
 end Behavioral;
  
