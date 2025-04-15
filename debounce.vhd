@@ -28,11 +28,11 @@ USE ieee.std_logic_1164.all;
 
 ENTITY debounce IS
   GENERIC(
-    clk_freq    : INTEGER := 50_000_000;  --system clock frequency in Hz
+    clk_freq    : INTEGER := 100_000_000;  --system clock frequency in Hz
     stable_time : INTEGER := 10);         --time button must remain stable in ms
   PORT(
     clk     : IN  STD_LOGIC;  --input clock
-    reset_n : IN  STD_LOGIC;  --asynchronous active low reset
+    reset_n : IN  STD_LOGIC;  --asynchronous active high reset
     button  : IN  STD_LOGIC;  --input signal to be debounced
     result  : OUT STD_LOGIC); --debounced signal
 END debounce;
@@ -47,7 +47,7 @@ BEGIN
   PROCESS(clk, reset_n)
     VARIABLE count :  INTEGER RANGE 0 TO clk_freq*stable_time/1000;  --counter for timing
   BEGIN
-    IF(reset_n = '0') THEN                        --reset
+    IF(reset_n = '1') THEN                        --reset
       flipflops(1 DOWNTO 0) <= "00";                 --clear input flipflops
       result <= '0';                                 --clear result register
     ELSIF(clk'EVENT and clk = '1') THEN           --rising clock edge
