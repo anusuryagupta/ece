@@ -66,17 +66,34 @@ begin
       end if;  
     inputs(4 downto 0) <= invector;
     case current_state is
-        when S0 => -- reset
+        when S0 => -- RESET
           case inputs is
             when '10000000' | '10010000' => -- x4 or nobtn
-              next_state <= S0; -- stay in RESET
-              inputs(7 downto 5) <= '100';
+              next_state <= S0; -- stay in RESET, outvector doesn't change
             when '10000100' => -- x2
-              next_state <= S3; -- goto counter1
-              inputs(7 downto 5) <= '100';
+              next_state <= S3; -- goto counter1, outvector doesn't change
             when '10001000' | '10000010' | '10000001' => -- x3, x1, x0
-              next_state <= S8; -- goto counterfalse1
-              inputs(7 downto 5) <= '100';
+              next_state <= S8; -- goto counterfalse1, outvector doesn't change
+            when others =>
+              reset2 <= 1; -- big nono
+          end case;
+          when S1 => -- ARMED
+          case inputs is
+            when '01000000' | '01010000' => -- x4 or nobtn
+              next_state <= S1; -- stay in ARMED, outvector doesn't change
+            when '01000100' => -- x2
+              next_state <= S3; -- goto counter1, outvector doesn't change
+            when '01001000' | '01000010' | '01000001' => -- x3, x1, x0
+              next_state <= S8; -- goto counterfalse1, outvector doesn't change
+            when others =>
+              reset2 <= 1; -- big nono
+          end case;
+          when S2 => -- ALARM
+          case inputs is
+            when '00100000' | '00110000' | '00101000' | '00100010' | '00100001' => -- x4 or nobtn
+              next_state <= S0; -- stay in ALARM, outvector doesn't change
+            when '10000100' => -- x2
+              next_state <= S3; -- goto counter1, outvector doesn't change
             when others =>
               reset2 <= 1; -- big nono
           end case;
