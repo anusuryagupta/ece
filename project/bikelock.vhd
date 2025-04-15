@@ -37,7 +37,7 @@ entity bikelock is
   Port (   clk : in STD_LOGIC;
            reset : in STD_LOGIC;
            invector : in STD_LOGIC_VECTOR(4 downto 0); -- x4 x3 x2 x1 x0
-           masterout : out STD_LOGIC_VECTOR(3 downto 0);
+           modeout : out STD_LOGIC_VECTOR(3 downto 0);
            stateout : out STD_LOGIC_VECTOR(5 downto 0));
 end bikelock;
 
@@ -49,22 +49,23 @@ type state IS (S0, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, 
   --counterfalsetwo2, counterfalsetwo3, counterfalsetwo4, counterfalsetwo5
 signal current_state, next_state : state;
 signal inputs : std_logic_vector(7 downto 0);
-signal reset2 : in std_logic;
+signal reset2 : std_logic;
+signal debugwire : std_logic_vector(4 downto 0);
 
 begin
   process(clk, invector, inputs, reset, reset2)
   begin
-    if reset = '1' then
+    if reset = '1' then -- if reset switch or reset signal is thrown, send back to initial state of S0
         next_state <= S0;
         inputs <= "10000000";
       elsif reset2 = '1' then
         next_state <= S0;
-        reset2 <= '0';
+        reset2 <= '0'; -- if the signal was thrown, turn off the reset signal
         inputs <= "10000000";
       elsif rising_edge(clk) then
-        current_state <= next_state;
+        current_state <= next_state; -- see plusthree for motivation
       end if;  
-    inputs(4 downto 0) <= invector;
+    inputs(4 downto 0) <= invector; -- update the full input group to the most recent input button positions
     case current_state is
         when S0 => -- RESET
           case inputs is
@@ -116,8 +117,19 @@ begin
               when others =>
                 reset2 <= 1; -- big nono
               end case;
-              
-      
+          -- continue with s4-s16
+        end case;
+        -- send inputs(7 downto 5) to modeout
+
+        -- convert states to 5 bit binary position and send that out to debugwire, probably needs some kind of case statement
+
+        -- if (some condition) stateout <= debugwire, else stateout <= '00000'
+        -- stateout should map to the LEDs so we can help test state by state
+        -- add an input bit for (some condition) ?
+
+        -- wait until (invector = '00000') -- stops one button press from counting as more than one state
+        -- implement debounce here?
+    end process;
       
 
 end Behavioral;
