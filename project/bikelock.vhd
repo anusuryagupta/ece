@@ -78,7 +78,7 @@ begin
             when others =>
               reset2 <= 1; -- big nono
           end case;
-          when S1 => -- ARMED
+        when S1 => -- ARMED
           case inputs is
             when '01000000' | '01010000' => -- x4 or nobtn
               next_state <= S1; -- stay in ARMED, outvector doesn't change
@@ -89,7 +89,7 @@ begin
             when others =>
               reset2 <= 1; -- big nono
           end case;
-          when S2 => -- ALARM
+        when S2 => -- ALARM
           case inputs is
             when '00100000' | '00110000' | '00101000' | '00100010' | '00100001' => -- x4 or nobtn
               next_state <= S0; -- stay in ALARM, outvector doesn't change
@@ -98,26 +98,108 @@ begin
             when others =>
               reset2 <= 1; -- big nono
           end case;
-        when S3 =>
-            case inputs is
-              when '10000000' | '01000000' | '00100000' =>
-                next_state <= S3; -- stay in counter1, outvector doesn't change
-              when '10000001' =>
-                next_state <= S4; -- goto counter2, outvector doesn't change
-              when '00100010' | '00100100' | '00101000' | '00110000' =>
-                next_state <= S2; -- goto ALARM, outvector doesn't change
-              when '10000100' | '01000100' =>
-                next_state <= S13; -- goto counterfalsetwo2, outvector doesn't change
-              when '10010000' =>
-                next_state <= S0; -- goto RESET
-              when '01010000' =>
-                next_state <= S1; -- goto ARMED
-              when '10001000' | '10000010' | '10001000' | '10000010' =>
-                next_state <= S9; -- goto counterfalse2, outvector doesn't change
-              when others =>
-                reset2 <= 1; -- big nono
-              end case;
+        when S3 => -- counter1
+          case inputs is
+            when '10000000' | '01000000' | '00100000' =>
+              next_state <= S3; -- stay in counter1, outvector doesn't change
+            when '10000001' =>
+              next_state <= S4; -- goto counter2, outvector doesn't change -- dont we need go to S4 for armed and alarm? - addy
+            when '00100010' | '00100100' | '00101000' | '00110000' =>
+              next_state <= S2; -- goto ALARM, outvector doesn't change
+            when '10000100' | '01000100' =>
+              next_state <= S13; -- goto counterfalsetwo2, outvector doesn't change
+            when '10010000' =>
+              next_state <= S0; -- goto RESET
+            when '01010000' =>
+              next_state <= S1; -- goto ARMED
+            when '10001000' | '10000010' | '10001000' | '10000010' =>
+              next_state <= S9; -- goto counterfalse2, outvector doesn't change
+            when others =>
+              reset2 <= 1; -- big nono
+          end case;
           -- continue with s4-s16
+        when S4 => --counter2
+            case inputs is
+              when '10000000' | '01000000' | '00100000' => -- when no button
+                next_state <= S4; -- stay in counter2
+              when '10001000' | '01001000' | '00101000' => -- X3 pressed in any state
+                next_state <= S5 --go to counter3
+              when '00100010' | '00100100' | '00100001' | '00110000' => --Alarm incorrect
+                next_state <= S2; -- goto ALARM, outvector doesn't change
+              when '10000100' | '01000100' => -- X2 pressed in 100 or 010
+                next_state <= S14; -- goto counterfalsetwo2, outvector doesn't change
+              when '10010000' => -- 100 X4 pressed
+                next_state <= S0; -- goto RESET
+              when '01010000' => -- 010 X4 pressed
+                next_state <= S1; -- goto ARMED
+              when '01000001' | '01000010' | '10000001' | '10000010' => -- 100 or 010 incorrect - X0 or X1
+                next_state <= S10; -- goto counterfalse3, outvector doesn't change
+              when others =>
+                reset2 <= 1; -- erm guys...
+            end case;
+          when S5 => -- counter3
+            case inputs is
+              when '10000000' | '01000000' | '00100000' => -- when no button
+                next_state <= S5; -- stay in counter3
+              when '10001000' | '01001000' | '00101000' => -- X3 pressed in any state
+                next_state <= S6 --go to counter4
+              when '00100010' | '00100100' | '00100001' | '00110000' => --Alarm incorrect
+                next_state <= S2; -- goto ALARM, outvector doesn't change
+              when '10000100' | '01000100' => -- X2 pressed in 100 or 010
+                next_state <= S15; -- goto counterfalsetwo3, outvector doesn't change
+              when '10010000' => -- 100 X4 pressed
+                next_state <= S0; -- goto RESET
+              when '01010000' => -- 010 X4 pressed
+                next_state <= S1; -- goto ARMED
+              when '01000001' | '01000010' | '10000001' | '10000010' => -- 100 or 010 incorrect - X0 or X1
+                next_state <= S11; -- goto counterfalse3, outvector doesn't change
+              when others =>
+                reset2 <= 1; -- erm guys...
+            end case;
+          when S6 => -- counter4
+            case inputs is
+              when '10000000' | '01000000' | '00100000' => -- when no button
+                next_state <= S6; -- stay in counter3
+              when '10000010' | '01000010' | '00100010' => -- X1 pressed in any state
+                next_state <= S7 --go to counter4
+              when '00101000' | '00100100' | '00100001' | '00110000' => --Alarm incorrect - X4, X3, X2, X0
+                next_state <= S2; -- goto ALARM, outvector doesn't change
+              when '10000100' | '01000100' => -- X2 pressed in 100 or 010
+                next_state <= S16; -- goto counterfalsetwo3, outvector doesn't change
+              when '10010000' => -- 100 X4 pressed
+                next_state <= S0; -- goto RESET
+              when '01010000' => -- 010 X4 pressed
+                next_state <= S1; -- goto ARMED
+              when '01000001' | '01001000' | '10000001' | '10001000' => -- 100 or 010 incorrect - X0 or X3
+                next_state <= S11; -- goto counterfalse3, outvector doesn't change
+              when others =>
+                reset2 <= 1; -- erm guys...
+            end case;
+          when S7 => -- counter5
+              case inputs is
+                when '10000000' | '01000000' | '00100000' => -- when no button
+                  next_state <= S6; -- stay in counter7
+                when '10010000' => -- 100 X4 pressed
+                  next_state <= S1; --go to Armed
+                when '01010000' | '10001000' | '10000100' | '10000010' | '10000001'  => -- 010 and X4 OR 100 and wrong
+                  next_state <= S0; -- go to reset
+                when '00110000' => --001 and X4
+                  next_state <= S1; -- go to Armed
+                when  '01001000' | '01000100' | '01000010' | '01000001' => -- 010 and wrong
+                  next_state <= S2; -- go to alarm
+                when others =>
+                  reset2 <= 1; -- erm guys...
+              end case;
+            when S8 => -- counterfalseone
+                case inputs is 
+                  when '10010000' => -- 100 and X4
+                    next_state <= S0; -- return to reset
+                  when '01010000' => -- 010 and X4
+                    next_state <= S1; -- return to armed
+                  when others =>
+                    reset2 <= 1; -- erm guys...
+                endcase;
+            
         end case;
         -- send inputs(7 downto 5) to modeout
 
