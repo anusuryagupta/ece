@@ -178,7 +178,7 @@ begin
           when S7 => -- counter5
               case inputs is
                 when '10000000' | '01000000' | '00100000' => -- when no button
-                  next_state <= S6; -- stay in counter7
+                  next_state <= S7; -- stay in counter7
                 when '10010000' => -- 100 X4 pressed
                   next_state <= S1; --go to Armed
                 when '01010000' | '10001000' | '10000100' | '10000010' | '10000001'  => -- 010 and X4 OR 100 and wrong
@@ -192,13 +192,119 @@ begin
               end case;
             when S8 => -- counterfalseone
                 case inputs is 
+                  when '10000000' | '01000000' => -- when no button
+                    next_state <= S8; -- stay in S8
                   when '10010000' => -- 100 and X4
                     next_state <= S0; -- return to reset
                   when '01010000' => -- 010 and X4
                     next_state <= S1; -- return to armed
+                  when '01000100' => -- 010 and X2
+                    next_state <= S13; -- counterfalsetwo2
+                  when '10001000' | '10000100' | '10000010' | '10000001' | '01001000' | '01000010' | '01000001' => --100 X3, X2, X1, X0 or 010 X3, X1, X0 pressed
+                    next_state <= S9; -- counterfalsetwo
                   when others =>
                     reset2 <= 1; -- erm guys...
-                endcase;
+                end case;
+            when S9 => -- counterfalsetwo
+                case inputs is 
+                  when '10000000' | '01000000' => -- when no button
+                    next_state <= S9; -- stay in S9
+                  when '10010000' => -- 100 and X4
+                    next_state <= S0; -- return to reset
+                  when '01010000' => -- 010 and X4
+                    next_state <= S1; -- return to armed
+                  when '01000100' => -- 010 and X2
+                    next_state <= S14; -- counterfalsetwo2
+                  when '10001000' | '10000100' | '10000010' | '10000001' | '01001000' | '01000010' | '01000001' => --100 X3, X2, X1, X0 or 010 X3, X1, X0 pressed
+                    next_state <= S10; -- counterfalsefour
+                  when others =>
+                    reset2 <= 1; -- erm guys...
+                end case;
+            when S10 => -- counterfalsethree
+                case inputs is 
+                  when '10000000' | '01000000' => -- when no button
+                    next_state <= S10; -- stay in S10
+                  when '10010000' => -- 100 and X4
+                    next_state <= S0; -- return to reset
+                  when '01010000' => -- 010 and X4
+                    next_state <= S1; -- return to armed
+                  when '01000100' => -- 010 and X2
+                    next_state <= S15; -- counterfalsethree2
+                  when '10001000' | '10000100' | '10000010' | '10000001' | '01001000' | '01000010' | '01000001' => --100 X3, X2, X1, X0 or 010 X3, X1, X0 pressed
+                    next_state <= S11; -- counterfalsefour
+                  when others =>
+                    reset2 <= 1; -- erm guys...
+                end case;
+            when S11 => -- counterfalsefour
+                case inputs is 
+                  when '10000000' | '01000000' => -- when no button
+                    next_state <= S11; -- stay in S11
+                  when '10010000' => -- 100 and X4
+                    next_state <= S0; -- return to reset
+                  when '01010000' => -- 010 and X4
+                    next_state <= S1; -- return to armed
+                  when '01000100' => -- 010 and X2
+                    next_state <= S16; -- counterfalsefour2
+                  when '10001000' | '10000100' | '10000010' | '10000001' | '01001000' | '01000010' | '01000001' => --100 X3, X2, X1, X0 or 010 X3, X1, X0 pressed
+                    next_state <= S12; -- counterfalsefive
+                  when others =>
+                    reset2 <= 1; -- erm guys...
+                end case;
+            when S12 => --counterfalsefive
+                case inputs is 
+                    when '10000000' | '01000000' => -- when no button
+                    next_state <= S12; -- stay in counterfalsefive
+                    when '10010000' | '10001000' | '10000100' | '10000010' | '10000001' => -- 100 and X4 - X0 pressed
+                      next_state <= '10010000' ; -- return to reset
+                    when '01010000' | '01001000' | '01000100' | '01000010' | '01000001'; => -- 010 and X4 - X0 pressed
+                      next_state <= '00100000'; -- go to alarm state
+                    when else =>
+                      reset2 <= 1; -- erm guys...
+                end case;
+            when S13 => -- counterfalsetwo2
+                case inputs is 
+                  when '01000000' => -- 010 no button
+                    next_state <= S13; -- stay in counterfalsetwo2
+                  when '01000100' => -- 010 and X2
+                    next_state <= S1; -- return to armed;
+                  when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
+                    next_state <= S14; -- go to counterfalsethree2
+                  when else =>
+                    reset2 <= 1;
+                end case;
+             when S14 => -- counterfalsethree2
+                case inputs is 
+                  when '01000000' => -- 010 no button
+                    next_state <= S14; -- stay in counterfalsethree2
+                  when '01000100' => -- 010 and X2
+                    next_state <= S1; -- return to armed;
+                  when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
+                    next_state <= S15; -- go to counterfalsefour2
+                  when else =>
+                    reset2 <= 1;
+                end case;
+             when S15 => -- counterfalsetwo2
+                case inputs is 
+                  when '01000000' => -- 010 no button
+                    next_state <= S15; -- stay in counterfalsefour2
+                  when '01000100' => -- 010 and X2
+                    next_state <= S1; -- return to armed;
+                  when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
+                    next_state <= S16; -- go to counterfalsefive2
+                  when else =>
+                    reset2 <= 1;
+                end case;
+             when S16 => -- counterfalsefive2
+                case inputs is 
+                  when '01000000' => -- 010 no button
+                    next_state <= S13; -- stay in counterfalsefive2
+                  when '01000100' => -- 010 and X2
+                    next_state <= S1; -- return to armed;
+                  when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
+                    next_state <= S2; -- go to counterfalsethree2
+                  when else =>
+                    reset2 <= 1;
+                end case;
             
         end case;
         -- send inputs(7 downto 5) to modeout
