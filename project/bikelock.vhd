@@ -268,7 +268,7 @@ begin
                   when '01000100' => -- 010 and X2
                     next_state <= S1; -- return to armed;
                   when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
-                    next_state <= S14; -- go to counterfalsethree2
+                    next_state <= S10; -- go to counterfalsethree
                   when else =>
                     reset2 <= 1;
                 end case;
@@ -279,7 +279,7 @@ begin
                   when '01000100' => -- 010 and X2
                     next_state <= S1; -- return to armed;
                   when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
-                    next_state <= S15; -- go to counterfalsefour2
+                    next_state <= S11; -- go to counterfalsefour
                   when else =>
                     reset2 <= 1;
                 end case;
@@ -290,7 +290,7 @@ begin
                   when '01000100' => -- 010 and X2
                     next_state <= S1; -- return to armed;
                   when '01010000' | '01001000' | 01000010' | '01000001' => -- 010 and X4,X3,X1,X0
-                    next_state <= S16; -- go to counterfalsefive2
+                    next_state <= S12; -- go to counterfalsefive
                   when else =>
                     reset2 <= 1;
                 end case;
