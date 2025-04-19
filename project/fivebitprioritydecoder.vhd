@@ -35,14 +35,12 @@ use xil_defaultlib.all;
 
 entity fivebitprioritydecoder is
   Port (   I : in STD_LOGIC_VECTOR (4 downto 0); 
-           O : out STD_LOGIC_VECTOR (5 downto 0)); -- nobtn at 5, x4 at 4, x3 at 3, etc
+           O : out STD_LOGIC_VECTOR (4 downto 0)); -- nobtn at 5, x4 at 4, x3 at 3, etc
 end fivebitprioritydecoder;
 
 architecture Behavioral of fivebitprioritydecoder is
 -- priority should be x4 > x3 > x2 > x1 > x0
 begin
-with num select
-    O(5) <= '1' when "00000", '0' when others; --nobtn
 with num select
     O(4) <= '1' when "10000" | "10001" | "10010" | "10011" | "10100" | "10101" | "10110" | "10111" | "11000" | "11001" | "11010" | "11011" | "11100" | "11101" | "11110" | "11111", '0' when others; -- x4
 with num select
