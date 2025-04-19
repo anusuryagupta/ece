@@ -35,12 +35,13 @@ use xil_defaultlib.all;
 
 entity bikelock is
   Port (   clk : in STD_LOGIC;
-           reset : in STD_LOGIC;
+           reset : in STD_LOGIC; -- leftmost switch
+           debugmode : in STD_LOGIC; -- second leftmost switch
            invector : in STD_LOGIC_VECTOR(4 downto 0); -- x4 x3 x2 x1 x0
-           modeout : out STD_LOGIC_VECTOR(3 downto 0);
-           stateout : out STD_LOGIC_VECTOR(5 downto 0));
+           leds : out STD_LOGIC_VECTOR(1 downto 0); -- leftmost two LEDs corresponding to reset switch and debugmode switch
+           modeout : out STD_LOGIC_VECTOR(3 downto 0); -- should convert through displaydecoder and end up in seven-segment
+           stateout : out STD_LOGIC_VECTOR(4 downto 0)); -- 1st through 5ths rightmost LEDs
 end bikelock;
-
 architecture Behavioral of bikelock is
 
 type state IS (S0, S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16);
@@ -307,16 +308,22 @@ begin
                 end case;
             
         end case;
-        -- send inputs(7 downto 5) to modeout
-
+        modeout(2 downto 0) <= inputs(7 downto 5); -- send inputs(7 downto 5) to modeout
+        modeout(3) <= '0';
         -- convert states to 5 bit binary position and send that out to debugwire, probably needs some kind of case statement
+          -- see github for assignment table
+          -- copy syntax of displaydecoder
+        if debugmode = '1' then
+          stateout <= debugwire;
+        else 
+          stateout <= '00000';
+        end if;
+        -- stateout should map to the LEDs in constraints so we can help test state by state
 
-        -- if (some condition) stateout <= debugwire, else stateout <= '00000'
-        -- stateout should map to the LEDs so we can help test state by state
-        -- add an input bit for (some condition) ?
-
-        -- wait until (invector = '00000') -- stops one button press from counting as more than one state
-        -- implement debounce here?
+        if invector /= '00000' then
+          wait until invector = '00000' -- stops one button press from counting as more than one state
+          wait for 10 ns; -- debounces button, holds you in this state until button is done bouncing and then continues on rising_edge(clk)
+        end if;
     end process;
       
 
