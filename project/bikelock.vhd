@@ -257,7 +257,7 @@ begin
                     next_state <= S12; -- stay in counterfalsefive
                     when '10010000' | '10001000' | '10000100' | '10000010' | '10000001' => -- 100 and X4 - X0 pressed
                       next_state <= '10010000' ; -- return to reset
-                    when '01010000' | '01001000' | '01000100' | '01000010' | '01000001'; => -- 010 and X4 - X0 pressed
+                    when '01010000' | '01001000' | '01000100' | '01000010' | '01000001' => -- 010 and X4 - X0 pressed
                       next_state <= '00100000'; -- go to alarm state
                     when else =>
                       reset2 <= 1; -- erm guys...
