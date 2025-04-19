@@ -311,9 +311,9 @@ begin
         modeout(2 downto 0) <= inputs(7 downto 5); -- send inputs(7 downto 5) to modeout
         modeout(3) <= '0';
         -- convert states to 5 bit binary position and send that out to debugwire, probably needs some kind of case statement
-          -- see github for assignment table
-          -- copy syntax of displaydecoder
-        if debugmode = '1' then
+          with current_state select
+                stateout(4) <= 
+        if debugmode = '1' then -- heh. de bug mode. luigi mangione style
           stateout <= debugwire;
         else 
           stateout <= '00000';
