@@ -312,7 +312,15 @@ begin
         modeout(3) <= '0';
         -- convert states to 5 bit binary position and send that out to debugwire, probably needs some kind of case statement
           with current_state select
-                stateout(4) <= 
+                stateout(4) <= '1' when S12 | S13 | S14 | S15 | S16, '0' when others;
+          with current_state select
+                stateout(3) <= '1' when S7 | S8 | S9 | S10 | S11, '0' when others;
+          with current_state select
+                stateout(2) <= '1' when S3  | S8 | S9 | S10 | S11, '0' when others;
+          with current_state select
+                stateout(1) <= '1' when S3  | S8 | S9 | S10 | S11, '0' when others;
+         with current_state select
+                stateout(0) <= '1' when S3  | S8 | S9 | S10 | S11, '0' when others;
         if debugmode = '1' then -- heh. de bug mode. luigi mangione style
           stateout <= debugwire;
         else 
