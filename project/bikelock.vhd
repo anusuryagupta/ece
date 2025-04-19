@@ -321,7 +321,7 @@ begin
         -- stateout should map to the LEDs in constraints so we can help test state by state
 
         if invector /= '00000' then
-          wait until invector = '00000' -- stops one button press from counting as more than one state
+          wait until invector = '00000'; -- stops one button press from counting as more than one state
           wait for 10 ns; -- debounces button, holds you in this state until button is done bouncing and then continues on rising_edge(clk)
         end if;
     end process;
